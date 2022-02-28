@@ -3,10 +3,12 @@ import axios from 'axios'
 
 const fetchAPI = async (searchTerm:string,) => {
   try {
-    const params = {query: searchTerm};
+    const params = {
+      query: searchTerm,
+      display: 10,
+    };
 
     const res = await axios.get('https://cors-anywhere.herokuapp.com/https://openapi.naver.com/v1/search/book.json', {
-        method:'GET',
         params,
         headers:{
             'Content-Type': 'application/json',

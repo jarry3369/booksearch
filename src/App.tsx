@@ -65,14 +65,18 @@ const GridView = styled.div`
 
 function App() {
   const [ fetchedData, setFetchedData ] = useState<any>([]);
+  const [ searchTerms, setSearchTerms] = useState<Object>({})
 
 
-  const fetchAPI = async (searchTerm:any,) => {
+  const fetchAPI = async (searchTerm?:string,) => {
     try {      
-      const params = {query:'UTF-8'};
-  
+      const params = {
+        query: searchTerm,
+        display: 100,
+      };
+      console.log(params);
+      
       const res = await axios.get('https://cors-anywhere.herokuapp.com/https://openapi.naver.com/v1/search/book.json', {
-          method:'GET',
           params,
           headers:{
               'Content-Type': 'application/json',
@@ -95,10 +99,10 @@ function App() {
         <SearchContainer>
           <SearchBarContainer>
             <img src={searchIcon} alt='serchIcon'/>
-            <SearchBar onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>)=> {              
-              if(e.key === 'Enter'){
+            <SearchBar onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>)=> {       
+              if(e.key === 'Enter' && e.currentTarget.value !== ''){
                 fetchAPI(e.currentTarget.value)
-              }
+              }              
             }}
           placeholder='검색어 입력' />
           </SearchBarContainer>
@@ -107,9 +111,9 @@ function App() {
 
         <p>도서 검색 결과 총 {fetchedData.display ? fetchedData.display : 0 }건</p>
 
-        <GridView>
-          {/* {fetchedData.length > 0 ? <BookList fetchedData={fetchedData} /> : <NoResult/>} */}
-        </GridView>
+          {fetchedData.length === 0 || fetchedData.display === 0 ? <NoResult/> : fetchedData.items.map((item:any)=>{
+            return (<BookList fetchedData={item} />)
+          }) }
       </Wrapper>
     </>
   );
