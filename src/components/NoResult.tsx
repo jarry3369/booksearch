@@ -7,6 +7,7 @@ const Wrapper = styled.div`
     display: grid;
     place-content: center;
     justify-items: center;
+    min-height : 35vh;
 `
 
 type Props = {
