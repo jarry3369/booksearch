@@ -8,9 +8,10 @@ type Props = {
 }
 
 export default function PageButton({ page, setCurrentPage, isActive, setStart,}:Props) {
-  console.log(isActive);
   
     const handleClickButton = () => {
+      console.log('page',page);
+      
       setCurrentPage(page);
       setStart((page-1)*10+1);
     };

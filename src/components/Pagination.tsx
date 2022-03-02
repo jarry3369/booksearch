@@ -25,8 +25,8 @@ export default function Pagination({ totalPage, currentPage, setCurrentPage, set
             start:showPages.start-PPL,
             end:showPages.start-1,
         });
-        setCurrentPage(showPages.start)
-        setStart((showPages.start-1)*10+1);
+        setCurrentPage(showPages.start-1)
+        setStart((showPages.start-2)*10+1);
     }
   }
 
@@ -44,22 +44,11 @@ export default function Pagination({ totalPage, currentPage, setCurrentPage, set
                 start: showPages.start+PPL,
                 end: showPages.end+PPL,
             });
-        }
-
-        setCurrentPage(showPages.start);
-        setStart((showPages.start-1)*10+1);
+        } 
+        setCurrentPage(showPages.end+1);
+        setStart(showPages.end*10+1);
     }
   }
-
-//   const changePageNumbersBackward = () => {
-//     currentPage > PPL &&
-//       setShowPages(prev => arrowHandler(prev, -1, totalPage));
-//   };
-
-//   const changePageNumberForward = () => {
-//     showPages.end <= totalPage &&
-//       setShowPages(prev => arrowHandler(prev, 1, totalPage));
-//   };
 
   const getNumArray = (startN:number,endN:number) => {      
     if(endN > 1 ){

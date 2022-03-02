@@ -8,10 +8,12 @@ import searchIcon from './icon_search.png'
 import NoResult from 'components/NoResult';
 import BookList from './components/BookList';
 import Pagination from 'components/Pagination';
+import Popup from 'components/Popup';
 // import fetchAPI from './util/fetchAPI'
 
 function App() {
   const [ start, setStart ] = useState<number>(1);
+  const [ showDetails, setShowDetails ] = useState<boolean>(false);
   
   const [ params, setParams ] = useState<any>({
     query:"",
@@ -38,16 +40,22 @@ function App() {
   },[currentPage])
 
   useEffect(()=> {
-    if(params.query === "")return;
-    else(
-      fetchAPI()
-    )
+    console.log(params);
+    if( (params.d_publ || params.d_auth || params.d_titl) && params.query === ""){
+      const url = 'https://jarry3369-cors-proxy.herokuapp.com/https://openapi.naver.com/v1/search/book_adv.xml'
+      fetchAPI(url)
+    }
+    else if (params.query !== "") {
+      const url = 'https://jarry3369-cors-proxy.herokuapp.com/https://openapi.naver.com/v1/search/book.json'
+      fetchAPI(url)
+    }
   },[params])
 
-  const fetchAPI = async () => {
+  const fetchAPI = async (url:string) => {
+    console.log(params);
+    
     try {
-      
-      const res = await axios.get('https://jarry3369-cors-proxy.herokuapp.com/https://openapi.naver.com/v1/search/book.json', {
+      const res:any = await axios.get(url, {
           params,
           headers:{
               'Content-Type': 'application/json',
@@ -55,6 +63,10 @@ function App() {
               'X-Naver-Client-Secret': `${process.env.REACT_APP_CLIENTSECRET}`,
           },
       })
+
+      console.log(res.data);
+      
+      
       setFetchedData(res.data)
 
     } catch (error) {
@@ -80,7 +92,8 @@ function App() {
             }}
           placeholder='검색어 입력' />
           </SearchBarContainer>
-          <button>상세검색</button>
+          <SearchDetailBtn onClick={()=>{setShowDetails(!showDetails)}}>상세검색</SearchDetailBtn>
+          <Popup showDetails={showDetails} setParams={setParams} params={params} fetchAPI={fetchAPI} />
         </SearchContainer>
 
         <p>도서 검색 결과 총 {fetchedData.total ? fetchedData.total : 0 }건</p>
@@ -130,6 +143,7 @@ const SearchContainer = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
+  align-items: center;
 `
 
 const SearchBarContainer = styled.div`
@@ -153,6 +167,20 @@ const SearchBar = styled.input`
   &:focus{
     outline: none;
   }
+`
+
+const SearchDetailBtn = styled.button`
+cursor:pointer;
+font-weight: 500;
+font-size: 14px;
+margin: 0px 10px;
+background: none;
+color:rgba(141, 148, 160, 1);
+border: 1px solid rgba(141, 148, 160, 1);
+box-sizing: border-box;
+border-radius: 8px;
+width: 72px;
+height: 32px;
 `
 
 export default App;
